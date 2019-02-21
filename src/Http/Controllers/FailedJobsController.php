@@ -21,7 +21,17 @@ class FailedJobsController extends Controller
 	 */
 	public function index( Request $request ) {
 		try {
-			$failed = DB::raw( 'SELECT * FROM failed_jobs ORDER BY failed_at DESC' );
+			$failed = DB::select( 'SELECT * FROM failed_jobs ORDER BY failed_at DESC' );
+
+			if ( is_array( $failed ) ) {
+
+				$failed = array_map( function ( $failed ) {
+
+					$failed->payload = json_decode( $failed->payload );
+
+					return $failed;
+				}, $failed );
+			}
 
 			return response()->json( compact( 'failed' ) );
 

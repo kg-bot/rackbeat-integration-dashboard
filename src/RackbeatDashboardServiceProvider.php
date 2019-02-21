@@ -37,7 +37,7 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
 
 		$this->publishes( [ $configPath => $publishPath ], 'config' );
 
-		$this->loadRoutesFrom( './routes.php' );
+		$this->loadRoutesFrom( __DIR__ . '/routes.php' );
 	}
 
 	public function register() { }
