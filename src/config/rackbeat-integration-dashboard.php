@@ -10,4 +10,5 @@ return [
 
 	'context'          => null,
 	'connection_class' => \App\Connection::class,
+	'oauth_token'      => env( 'RACKBEAT_DASHBOARD_TOKEN' ),
 ];

@@ -6,7 +6,9 @@
  * Time: 6:13 PM
  */
 
-Route::group( [ 'prefix' => 'rackbeat-integration-dashboard', 'namespace' => 'KgBot\RackbeatDashboard\Http\Controllers', 'middleware' => [ 'bindings', 'api', 'auth:api' ] ], function () {
+use KgBot\RackbeatDashboard\Http\Middleware\CheckDashboardToken;
+
+Route::group( [ 'prefix' => 'rackbeat-integration-dashboard', 'namespace' => 'KgBot\RackbeatDashboard\Http\Controllers', 'middleware' => [ 'web', CheckDashboardToken::class ] ], function () {
 
 	Route::get( 'jobs/{connection_id}', 'JobsController@index' )->name( 'dashboard-jobs.index' );
 

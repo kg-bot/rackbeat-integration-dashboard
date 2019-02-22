@@ -10,6 +10,7 @@ namespace KgBot\RackbeatDashboard;
 
 
 use Illuminate\Support\ServiceProvider;
+use KgBot\RackbeatDashboard\Console\Commands\MakeDashboardToken;
 use KgBot\RackbeatDashboard\Models\Job;
 use KgBot\RackbeatDashboard\Observers\JobObserver;
 
@@ -45,6 +46,12 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
 		$this->loadRoutesFrom( __DIR__ . '/routes.php' );
 
 		$this->loadMigrationsFrom( __DIR__ . '/database/migrations' );
+
+		if ( $this->app->runningInConsole() ) {
+			$this->commands( [
+				MakeDashboardToken::class,
+			] );
+		}
 
 		Job::observe( JobObserver::class );
 	}
