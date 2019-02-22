@@ -1,34 +1,30 @@
 {
-    "name": "kg-bot/rackbeat-integration-dashboard",
-    "description": "Dashboard for all Rackbeat integrations",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Stefan Ninic",
-            "email": "ninicstefan94@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
+	"name": "kg-bot/rackbeat-integration-dashboard",
+	"description": "Dashboard for all Rackbeat integrations",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Stefan Ninic",
+			"email": "ninicstefan94@gmail.com"
+		}
+	],
+	"minimum-stability": "dev",
 	"require": {
-
 		"php": ">=7.1",
 		"laravel/framework": "^5.5",
-		"guzzlehttp/guzzle": "*"
+		"guzzlehttp/guzzle": "*",
+		"ext-json": "*",
+		"laravel/passport": "~8"
 	},
 	"autoload": {
-
 		"psr-4": {
-
 			"KgBot\\RackbeatDashboard\\": "src/"
 		}
 	},
-	"extra":{
-
-		"laravel":{
-
-			"providers":[
-
+	"extra": {
+		"laravel": {
+			"providers": [
 				"KgBot\\RackbeatDashboard\\RackbeatDashboardServiceProvider"
 			]
 		}

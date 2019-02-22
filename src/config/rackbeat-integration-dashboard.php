@@ -8,4 +8,6 @@
 
 return [
 
+	'context'          => null,
+	'connection_class' => \App\Connection::class,
 ];

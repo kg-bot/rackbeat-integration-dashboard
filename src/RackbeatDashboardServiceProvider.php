@@ -10,6 +10,8 @@ namespace KgBot\RackbeatDashboard;
 
 
 use Illuminate\Support\ServiceProvider;
+use KgBot\RackbeatDashboard\Models\Job;
+use KgBot\RackbeatDashboard\Observers\JobObserver;
 
 class RackbeatDashboardServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,9 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
 	 */
 	public function boot() {
 
+		/**
+		 * Default package config registration
+		 */
 		$configPath = __DIR__ . '/config/rackbeat-integration-dashboard.php';
 
 		$this->mergeConfigFrom( $configPath, 'rackbeat-integration-dashboard' );
@@ -38,6 +43,10 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
 		$this->publishes( [ $configPath => $publishPath ], 'config' );
 
 		$this->loadRoutesFrom( __DIR__ . '/routes.php' );
+
+		$this->loadMigrationsFrom( __DIR__ . '/database/migrations' );
+
+		Job::observe( JobObserver::class );
 	}
 
 	public function register() { }
