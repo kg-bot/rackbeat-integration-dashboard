@@ -12,6 +12,8 @@ $ php artisan migrate
 
 ## 4. Run `php artisan make:dashboard-token`
 
+## 5. Add `rackbeat-integration-dashboard/*` to your `VerifyCsrfToken` middleware `$except` property
+
 This package requires you to use Laravel Jobs for all of your transfers and tasks between Rackbeat and 3rd party integrations.
 
 Each of your Job classes must extend `KgBot\RackbeatDashboard\Classes\DashboardJob` and it must have special `__construct` code.
