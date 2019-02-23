@@ -43,7 +43,7 @@ class Job extends Model
 	const CREATED_AT = 'created_at';
 	public    $timestamps = true;
 	protected $primaryKey = 'id';
-	protected $fillable   = [ 'command', 'queue', 'payload', 'created_by', 'args' ];
+	protected $fillable   = [ 'command', 'queue', 'payload', 'created_by', 'args', 'title' ];
 
 	protected $casts
 		= [
@@ -76,8 +76,11 @@ class Job extends Model
 		return $query->whereState( JobState::FAIL );
 	}
 
-	public function scopeOfConnection( Builder $query, $connection_id ) {
-		return $query->where( 'created_by', $connection_id );
+	public function scopeOfRackbeatAccount( Builder $query, $account_id ) {
+		return $query->whereHas( 'owner', function ( $query ) use ( $account_id ) {
+
+			return $query->where( 'rackbeat_user_account_id', $account_id );
+		} );
 	}
 
 	public function fillDefaults() {
@@ -153,6 +156,7 @@ class Job extends Model
 				'command'    => $this->command,
 				'queue'      => $this->queue,
 				'args'       => $this->args,
+				'title'      => $this->title,
 				'created_by' => $this->created_by,
 			] );
 

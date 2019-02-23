@@ -10,7 +10,9 @@ use KgBot\RackbeatDashboard\Http\Middleware\CheckDashboardToken;
 
 Route::group( [ 'prefix' => 'rackbeat-integration-dashboard', 'namespace' => 'KgBot\RackbeatDashboard\Http\Controllers', 'middleware' => [ 'web', CheckDashboardToken::class ] ], function () {
 
-	Route::get( 'jobs/{connection_id}', 'JobsController@index' )->name( 'dashboard-jobs.index' );
+	Route::get( 'jobs/{rackbeat_account_id}', 'JobsController@index' )->name( 'dashboard-jobs.index' );
 
-	Route::get( 'retry/{job}', 'JobsController@retry' )->name( 'dashboard-jobs.retry' );
+	Route::post( 'retry/{job}', 'JobsController@retry' )->name( 'dashboard-jobs.retry' );
+
+	Route::delete( 'jobs/{job}', 'JobsController@delete' )->name( 'dashboard-jobs.delete' );
 } );

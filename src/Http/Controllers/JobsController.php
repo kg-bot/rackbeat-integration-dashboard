@@ -19,9 +19,9 @@ class JobsController extends Controller
 	 *
 	 * @return \Illuminate\Http\JsonResponse
 	 */
-	public function index( Request $request, $connection_id ) {
+	public function index( Request $request, $rackbeat_account_id ) {
 		try {
-			$jobs = Job::OfConnection( $connection_id )->latest( 'created_at' )->paginate();
+			$jobs = Job::OfRackbeatAccount( $rackbeat_account_id )->latest( 'created_at' )->paginate();
 
 			return response()->json( compact( 'jobs' ) );
 
