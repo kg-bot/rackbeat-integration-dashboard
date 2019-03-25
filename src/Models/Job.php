@@ -43,7 +43,7 @@ class Job extends Model
 	const CREATED_AT = 'created_at';
 	public    $timestamps = true;
 	protected $primaryKey = 'id';
-	protected $fillable   = [ 'command', 'queue', 'payload', 'created_by', 'args', 'title' ];
+	protected $fillable   = [ 'command', 'queue', 'payload', 'created_by', 'args', 'title', 'delay' ];
 
 	protected $casts
 		= [
