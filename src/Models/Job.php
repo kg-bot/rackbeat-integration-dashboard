@@ -143,6 +143,7 @@ class Job extends Model
 	public function finish( bool $success = true ) {
 		$this->state       = $success ? JobState::SUCCESS : JobState::FAIL;
 		$this->finished_at = Carbon::now();
+		$this->progress    = 100;
 		$this->save();
 
 		$this->stateChanged();
