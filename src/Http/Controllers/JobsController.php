@@ -21,7 +21,7 @@ class JobsController extends Controller
 	 */
 	public function index( Request $request, $rackbeat_account_id ) {
 		try {
-			$jobs = Job::OfRackbeatAccount( $rackbeat_account_id )->latest( 'created_at' )->paginate();
+			$jobs = Job::OfRackbeatAccount( $rackbeat_account_id )->latest()->paginate( $request->get( 'per_page', 10 ), '*', 'page', $request->get( 'page', 1 ) );
 
 			return response()->json( compact( 'jobs' ) );
 
