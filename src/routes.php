@@ -6,10 +6,9 @@
  * Time: 6:13 PM
  */
 
-use Illuminate\Routing\Middleware\SubstituteBindings;
 use KgBot\RackbeatDashboard\Http\Middleware\CheckDashboardToken;
 
-Route::group( [ 'prefix' => 'rackbeat-integration-dashboard', 'namespace' => 'KgBot\RackbeatDashboard\Http\Controllers', 'middleware' => [ SubstituteBindings::class, CheckDashboardToken::class ] ], function () {
+Route::group( [ 'prefix' => 'rackbeat-integration-dashboard', 'namespace' => 'KgBot\RackbeatDashboard\Http\Controllers', 'middleware' => [ 'web', CheckDashboardToken::class ] ], function () {
 
 	Route::get( 'jobs/{rackbeat_account_id}', 'JobsController@index' )->name( 'dashboard-jobs.index' );
 
