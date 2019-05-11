@@ -9,7 +9,11 @@
 namespace KgBot\RackbeatDashboard\Http\Controllers;
 
 
+use Exception;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use KgBot\RackbeatDashboard\Models\Job;
 
 class JobsController extends Controller
@@ -17,7 +21,7 @@ class JobsController extends Controller
 	/**
 	 * @param Request $request
 	 *
-	 * @return \Illuminate\Http\JsonResponse
+	 * @return JsonResponse
 	 */
 	public function index( Request $request, $rackbeat_account_id ) {
 		try {
@@ -25,10 +29,15 @@ class JobsController extends Controller
 
 			return response()->json( compact( 'jobs' ) );
 
-		} catch ( \Exception $exception ) {
+		} catch ( Exception $exception ) {
 
 			return response()->json( [ 'error' => $exception->getMessage() ], 500 );
 		}
+	}
+
+	public function details( Request $request, Job $job ) {
+
+		return response()->json( [ 'job' => $job ] );
 	}
 
 	/**
@@ -36,7 +45,7 @@ class JobsController extends Controller
 	 *
 	 * @param Job $job
 	 *
-	 * @return \Illuminate\Http\JsonResponse
+	 * @return JsonResponse
 	 */
 	public function retry( Job $job ) {
 		/**
@@ -47,7 +56,7 @@ class JobsController extends Controller
 			$job->retry();
 
 			return response()->json( [ 'message' => 'Job ' . $job->id . ' has been sent to queue.' ] );
-		} catch ( \Exception $exception ) {
+		} catch ( Exception $exception ) {
 
 			return response()->json( [ 'message' => $exception->getMessage() ], 500 );
 		}
@@ -56,8 +65,8 @@ class JobsController extends Controller
 	/**
 	 * @param Job $job
 	 *
-	 * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
-	 * @throws \Exception
+	 * @return ResponseFactory|Response
+	 * @throws Exception
 	 */
 	public function delete( Job $job ) {
 		$job->delete();

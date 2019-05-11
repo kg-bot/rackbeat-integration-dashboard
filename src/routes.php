@@ -15,4 +15,6 @@ Route::group( [ 'prefix' => 'rackbeat-integration-dashboard', 'namespace' => 'Kg
 	Route::post( 'retry/{job}', 'JobsController@retry' )->name( 'dashboard-jobs.retry' );
 
 	Route::delete( 'jobs/{job}', 'JobsController@delete' )->name( 'dashboard-jobs.delete' );
+
+	Route::get( 'jobs/{job}', 'JobsController@details' )->name( 'dashboard-jobs.details' );
 } );
