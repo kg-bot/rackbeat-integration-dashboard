@@ -9,13 +9,18 @@
 namespace KgBot\RackbeatDashboard\Classes;
 
 
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Mail;
+use KgBot\RackbeatDashboard\Mail\JobFailed;
 use KgBot\RackbeatDashboard\Models\Job;
+use Throwable;
 
 class DashboardJob implements ShouldQueue, Reportable, Executable
 {
@@ -33,7 +38,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 		try {
 			app()->call( [ $this, 'execute' ] );
 			$this->onFinish();
-		} catch ( \Throwable $e ) {
+		} catch ( Throwable $e ) {
 			$this->onFail( $e );
 		} finally {
 			$this->detachContext();
@@ -57,7 +62,10 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 		$this->jobModel->finish( true );
 	}
 
-	protected function onFail( \Throwable $e ) {
+	protected function onFail( Throwable $e ) {
+
+		$this->sendMailsOnFail( $e );
+
 		if ( $this instanceof Reportable ) {
 			$this->jobModel->report = collect( [ 'error' => $e->getMessage() ] );
 		}
@@ -67,6 +75,22 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 			$this->jobModel->finish( false );
 		}
 		$this->fail( $e );
+	}
+
+	protected function sendMailsOnFail( Throwable $e ) {
+
+		if ( Config::get( 'rackbeat-integration-dashboard.emails.send_on_fail', true ) === true ) {
+
+			$emails = Config::get( 'rackbeat-integration-dashboard.emails.addresses', [] );
+
+			Mail::to( $emails[0] )
+			    ->cc( implode( ',', array_slice( $emails, 1 ) ) )
+			    ->queue( new JobFailed( $this->jobModel->owner->rackbeat_user_account_id,
+				    $this->jobModel->owner->id,
+				    $e->getMessage(),
+				    Carbon::now()->toDateString(),
+				    $this->jobModel->id ) );
+		}
 	}
 
 	protected function isWillBeRetry(): bool {
@@ -80,7 +104,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 
 	public function execute() {
 
-		throw new \Exception( 'You must override execute() method in your own job class' );
+		throw new Exception( 'You must override execute() method in your own job class' );
 	}
 
 	protected function isRetried(): bool {

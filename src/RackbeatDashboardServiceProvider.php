@@ -47,6 +47,8 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
 
 		$this->loadMigrationsFrom( __DIR__ . '/database/migrations' );
 
+		$this->loadViewsFrom( __DIR__ . '/resources/views', 'rackbeat-dashboard' );
+
 		if ( $this->app->runningInConsole() ) {
 			$this->commands( [
 				MakeDashboardToken::class,

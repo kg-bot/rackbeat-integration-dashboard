@@ -10,9 +10,12 @@ namespace KgBot\RackbeatDashboard\Models;
 
 use App\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use KgBot\RackbeatDashboard\Classes\JobState;
 use KgBot\RackbeatDashboard\Notifications\LogMessage;
@@ -20,19 +23,19 @@ use KgBot\RackbeatDashboard\Notifications\Progress;
 use KgBot\RackbeatDashboard\Notifications\StateMessage;
 
 /**
- * @property int                                     $id
- * @property string                                  $queue
- * @property string                                  $command
- * @property array|null                              $payload
- * @property array|null                              $report
- * @property string                                  $state
- * @property int|null                                $progress
- * @property int                                     $attempts
- * @property int                                     $created_by
- * @property \Illuminate\Support\Carbon              $created_at
- * @property \Illuminate\Support\Carbon              $finished_at
- * @property \App\User                               $owner
- * @property JobLog[]|\Illuminate\Support\Collection $logs
+ * @property int                        $id
+ * @property string                     $queue
+ * @property string                     $command
+ * @property array|null                 $payload
+ * @property array|null                 $report
+ * @property string                     $state
+ * @property int|null                   $progress
+ * @property int                        $attempts
+ * @property int                        $created_by
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $finished_at
+ * @property User                       $owner
+ * @property JobLog[]|Collection        $logs
  */
 class Job extends Model
 {
@@ -45,13 +48,12 @@ class Job extends Model
 	protected $primaryKey = 'id';
 	protected $fillable   = [ 'command', 'queue', 'payload', 'created_by', 'args', 'title', 'delay' ];
 
-	protected $casts
-		= [
-			'payload'     => 'array',
-			'report'      => 'array',
-			'finished_at' => 'datetime',
-			'args'        => 'array',
-		];
+	protected $casts = [
+		'payload'     => 'array',
+		'report'      => 'array',
+		'finished_at' => 'datetime',
+		'args'        => 'array',
+	];
 
 	protected $table = 'dashboard_jobs';
 
@@ -61,7 +63,7 @@ class Job extends Model
 	}
 
 	/**
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 * @return BelongsTo
 	 */
 	public function owner() {
 		return $this->belongsTo( Config::get( 'rackbeat-integration-dashboard.connection_class', '\App\Connection' ), 'created_by' );
@@ -167,7 +169,7 @@ class Job extends Model
 			$this->delete();
 		} else {
 
-			throw new \Exception( 'This job can\'t be retried because it\'s in ' . $this->state . ' state.' );
+			throw new Exception( 'This job can\'t be retried because it\'s in ' . $this->state . ' state.' );
 		}
 	}
 
