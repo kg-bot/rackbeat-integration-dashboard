@@ -36,6 +36,6 @@ class JobFailed extends Mailable
 	 * @return $this
 	 */
 	public function build() {
-		return $this->view( 'view.name' );
+		return $this->view( 'rackbeat-dashboard::mail.job-failed' );
 	}
 }
