@@ -49,6 +49,10 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
 
 		$this->loadViewsFrom( __DIR__ . '/resources/views', 'rackbeat-dashboard' );
 
+		$this->publishes( [
+			__DIR__ . '/resources/views' => resource_path( 'views/vendor/rackbeat-dashboard' ),
+		] );
+
 		if ( $this->app->runningInConsole() ) {
 			$this->commands( [
 				MakeDashboardToken::class,
