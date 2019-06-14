@@ -1,9 +1,12 @@
 <p>
-	The job for user {{ $rackbeat_user_account_id }} - {{ $connection_id }} has failed.
+	The job for user <strong>{{ $rackbeat_user_account_id }}</strong> - (Connection: <strong>{{ $connection_id }}</strong>) has failed.
 
-	It has failed with error: {{ $error_message }}.
+	<br>
+	It has failed with error: <strong>{{ $error_message }}</strong>.
 
-	Job ID: {{ $job_id }}
+	<br>
+	Job ID: <strong>{{ $job_id }}</strong>
 
-	Failed at: {{ $failed_at }}
+	<br>
+	Failed at: <strong>{{ $failed_at }}</strong>
 </p>
