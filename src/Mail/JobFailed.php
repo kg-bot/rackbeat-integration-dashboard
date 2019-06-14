@@ -12,7 +12,7 @@ class JobFailed extends Mailable
 
 	public $rackbeat_user_account_id;
 	public $connection_id;
-	public $message;
+	public $error_message;
 	public $failed_at;
 	public $job_id;
 
@@ -25,7 +25,7 @@ class JobFailed extends Mailable
 
 		$this->rackbeat_user_id = $rackbeat_user_account_id;
 		$this->connection_id    = $connection_id;
-		$this->message          = $message;
+		$this->error_message    = $message;
 		$this->failed_at        = $failed_at;
 		$this->job_id           = $job_id;
 	}

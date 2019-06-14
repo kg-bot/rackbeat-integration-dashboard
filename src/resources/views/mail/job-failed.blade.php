@@ -1,7 +1,7 @@
 <p>
 	The job for user {{ $rackbeat_user_account_id }} - {{ $connection_id }} has failed.
 
-	It has failed with error: {{ $message }}.
+	It has failed with error: {{ $error_message }}.
 
 	Job ID: {{ $job_id }}
 
