@@ -23,7 +23,7 @@ class JobFailed extends Mailable
 	 */
 	public function __construct( $rackbeat_user_account_id, $connection_id, $message, $failed_at, $job_id ) {
 
-		$this->rackbeat_user_id = $rackbeat_user_account_id;
+        $this->rackbeat_user_account_id = $rackbeat_user_account_id;
 		$this->connection_id    = $connection_id;
 		$this->error_message    = $message;
 		$this->failed_at        = $failed_at;
