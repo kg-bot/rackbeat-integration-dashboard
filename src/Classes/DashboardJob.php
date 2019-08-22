@@ -85,11 +85,15 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 
 			Mail::to( $emails[0] )
 			    ->cc( implode( ',', array_slice( $emails, 1 ) ) )
-                ->queue(new JobFailed($this->jobModel->owner->rackbeat_user_account_id,
+                ->queue(new JobFailed(
+                        $this->jobModel->owner->rackbeat_user_account_id,
 				    $this->jobModel->owner->id,
 				    $e->getMessage(),
 				    Carbon::now()->toDateString(),
-				    $this->jobModel->id ) );
+                        $this->jobModel->id,
+                        $this->jobModel->owner->rackbeat_company_name ?? ''
+                    )
+                );
 		}
 	}
 

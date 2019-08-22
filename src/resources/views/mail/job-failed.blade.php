@@ -1,6 +1,6 @@
 <p>
-	The job for user <strong>{{ $rackbeat_user_account_id }}</strong> - (Connection:
-	<strong>{{ $connection_id }}</strong>) - Plugin: <strong>{{ $plugin_name }}</strong> has failed.
+	The job for user <strong>{{ $rackbeat_company_name }} ({{ $rackbeat_user_account_id }})</strong> - (Connection:
+	<strong>{{ $connection_id }}, {{ $plugin_name }}</strong>) has failed.
 
 	<br>
 	It has failed with error: <strong>{{ $error_message }}</strong>.

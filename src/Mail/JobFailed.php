@@ -16,13 +16,15 @@ class JobFailed extends Mailable
 	public $failed_at;
 	public $job_id;
     public $plugin_name;
+    public $rackbeat_company_name;
 
 	/**
 	 * Create a new message instance.
 	 *
 	 * @return void
 	 */
-	public function __construct( $rackbeat_user_account_id, $connection_id, $message, $failed_at, $job_id ) {
+    public function __construct($rackbeat_user_account_id, $connection_id, $message, $failed_at, $job_id, $rackbeat_company_name = '')
+    {
 
         $this->rackbeat_user_account_id = $rackbeat_user_account_id;
 		$this->connection_id    = $connection_id;
@@ -30,6 +32,7 @@ class JobFailed extends Mailable
 		$this->failed_at        = $failed_at;
 		$this->job_id           = $job_id;
         $this->plugin_name = config('app.plugin_name', '');
+        $this->rackbeat_company_name = $rackbeat_company_name;
 	}
 
 	/**
