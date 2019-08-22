@@ -29,7 +29,7 @@ class JobFailed extends Mailable
 		$this->error_message    = $message;
 		$this->failed_at        = $failed_at;
 		$this->job_id           = $job_id;
-        $this->plugin_name = config('app.plugin_name', ''),
+        $this->plugin_name = config('app.plugin_name', '');
 	}
 
 	/**
