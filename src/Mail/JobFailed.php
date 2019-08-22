@@ -15,6 +15,7 @@ class JobFailed extends Mailable
 	public $error_message;
 	public $failed_at;
 	public $job_id;
+    public $plugin_name;
 
 	/**
 	 * Create a new message instance.
@@ -28,6 +29,7 @@ class JobFailed extends Mailable
 		$this->error_message    = $message;
 		$this->failed_at        = $failed_at;
 		$this->job_id           = $job_id;
+        $this->plugin_name = config('app.plugin_name', ''),
 	}
 
 	/**
