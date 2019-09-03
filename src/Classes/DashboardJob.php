@@ -81,19 +81,59 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 
 		if ( Config::get( 'rackbeat-integration-dashboard.emails.send_on_fail', true ) === true ) {
 
-			$emails = Config::get( 'rackbeat-integration-dashboard.emails.addresses', [] );
+            $send = true;
+            $days = Config::get('rackbeat-integration-dashboard.emails.days', []);
+            $hours = Config::get('rackbeat-integration-dashboard.emails.hours', []);
+            $datetime = Carbon::now();
 
-			Mail::to( $emails[0] )
-			    ->cc( implode( ',', array_slice( $emails, 1 ) ) )
-                ->queue(new JobFailed(
-                        $this->jobModel->owner->rackbeat_user_account_id,
-				    $this->jobModel->owner->id,
-				    $e->getMessage(),
-				    Carbon::now()->toDateString(),
-                        $this->jobModel->id,
-                        $this->jobModel->owner->rackbeat_company_name ?? ''
-                    )
-                );
+            if (count($days) > 0 && count($hours) > 0) {
+
+                if (in_array($datetime->day, $days) && in_array($datetime->hour, $hours)) {
+
+                    $send = true;
+                } else {
+
+                    $send = false;
+                }
+            } elseif (count($days) > 0) {
+
+                if (in_array($datetime->day, $days)) {
+
+                    $send = true;
+                } else {
+
+                    $send = false;
+                }
+            } elseif (count($hours) > 0) {
+
+                if (in_array($datetime->hour, $hours)) {
+
+                    $send = true;
+                } else {
+
+                    $send = false;
+                }
+            } else {
+
+                $send = false;
+            }
+
+            if ($send) {
+
+                $emails = Config::get('rackbeat-integration-dashboard.emails.addresses', []);
+
+                Mail::to($emails[0])
+                    ->cc(implode(',', array_slice($emails, 1)))
+                    ->queue(new JobFailed(
+                            $this->jobModel->owner->rackbeat_user_account_id,
+                            $this->jobModel->owner->id,
+                            $e->getMessage(),
+                            Carbon::now()->toDateString(),
+                            $this->jobModel->id,
+                            $this->jobModel->owner->rackbeat_company_name ?? ''
+                        )
+                    );
+            }
 		}
 	}
 
