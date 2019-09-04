@@ -88,7 +88,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 
             if (count($days) > 0 && count($hours) > 0) {
 
-                if (in_array($datetime->day, $days) && in_array($datetime->hour, $hours)) {
+                if (in_array($datetime->englishDayOfWeek, $days) && in_array($datetime->hour, $hours)) {
 
                     $send = true;
                 } else {
@@ -97,7 +97,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
                 }
             } elseif (count($days) > 0) {
 
-                if (in_array($datetime->day, $days)) {
+                if (in_array($datetime->englishDayOfWeek, $days)) {
 
                     $send = true;
                 } else {
