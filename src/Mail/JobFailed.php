@@ -17,7 +17,8 @@ class JobFailed extends Mailable
 	public $job_id;
     public $plugin_name;
     public $rackbeat_company_name;
-    public $exception;
+    public $file = null;
+    public $line = null;
 
 	/**
 	 * Create a new message instance.
@@ -34,7 +35,11 @@ class JobFailed extends Mailable
 		$this->job_id           = $job_id;
         $this->plugin_name = config('app.plugin_name', '');
         $this->rackbeat_company_name = $rackbeat_company_name;
-        $this->exception = $exception;
+        if ($exception !== null) {
+
+            $this->file = $exception->getFile();
+            $this->line = $exception->getLine();
+        }
 	}
 
 	/**

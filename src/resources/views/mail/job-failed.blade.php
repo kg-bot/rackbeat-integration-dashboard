@@ -5,10 +5,12 @@
 	<br>
 	It has failed with error: <strong>{{ $error_message }}</strong>.
 
-	@if($exception !== null)
+	@if($file !== null)
 		<br>
 		File: {{ $exception->getFile() }}
+	@endif
 
+	@if($line !== null)
 		<br>
 		Line: {{ $exception->getLine() }}
 	@endif
