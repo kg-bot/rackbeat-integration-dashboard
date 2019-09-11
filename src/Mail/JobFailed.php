@@ -17,6 +17,7 @@ class JobFailed extends Mailable
 	public $job_id;
     public $plugin_name;
     public $rackbeat_company_name;
+    public $exception;
 
 	/**
 	 * Create a new message instance.
