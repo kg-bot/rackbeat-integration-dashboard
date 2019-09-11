@@ -7,12 +7,12 @@
 
 	@if($file !== null)
 		<br>
-        File: {{ $file }}
+        File: <strong>{{ $file }}</strong>
 	@endif
 
 	@if($line !== null)
 		<br>
-        Line: {{ $line }}
+        Line: <strong>{{ $line }}</strong>
 	@endif
 
 	<br>
