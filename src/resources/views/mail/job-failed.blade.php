@@ -5,6 +5,14 @@
 	<br>
 	It has failed with error: <strong>{{ $error_message }}</strong>.
 
+	@if($exception !== null)
+		<br>
+		File: {{ $exception->getFile() }}
+
+		<br>
+		Line: {{ $exception->getLine() }}
+	@endif
+
 	<br>
 	Job ID: <strong>{{ $job_id }}</strong>
 

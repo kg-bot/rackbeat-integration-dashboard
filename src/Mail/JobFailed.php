@@ -23,7 +23,7 @@ class JobFailed extends Mailable
 	 *
 	 * @return void
 	 */
-    public function __construct($rackbeat_user_account_id, $connection_id, $message, $failed_at, $job_id, $rackbeat_company_name = '')
+    public function __construct($rackbeat_user_account_id, $connection_id, $message, $failed_at, $job_id, $rackbeat_company_name = '', $exception = null)
     {
 
         $this->rackbeat_user_account_id = $rackbeat_user_account_id;
@@ -33,6 +33,7 @@ class JobFailed extends Mailable
 		$this->job_id           = $job_id;
         $this->plugin_name = config('app.plugin_name', '');
         $this->rackbeat_company_name = $rackbeat_company_name;
+        $this->exception = $exception;
 	}
 
 	/**
