@@ -10,6 +10,7 @@ namespace KgBot\RackbeatDashboard;
 
 
 use Illuminate\Support\ServiceProvider;
+use KgBot\RackbeatDashboard\Console\Commands\DeactivateDeadRackbeat;
 use KgBot\RackbeatDashboard\Console\Commands\MakeDashboardToken;
 use KgBot\RackbeatDashboard\Models\Job;
 use KgBot\RackbeatDashboard\Observers\JobObserver;
@@ -56,6 +57,7 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
 		if ( $this->app->runningInConsole() ) {
 			$this->commands( [
 				MakeDashboardToken::class,
+                DeactivateDeadRackbeat::class,
 			] );
 		}
 
