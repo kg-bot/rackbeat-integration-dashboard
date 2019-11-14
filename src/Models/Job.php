@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Config;
 use KgBot\RackbeatDashboard\Classes\JobState;
 use KgBot\RackbeatDashboard\Notifications\LogMessage;
 use KgBot\RackbeatDashboard\Notifications\Progress;
@@ -66,7 +65,7 @@ class Job extends Model
 	 * @return BelongsTo
 	 */
 	public function owner() {
-		return $this->belongsTo( Config::get( 'rackbeat-integration-dashboard.connection_class', '\App\Connection' ), 'created_by' );
+        return $this->belongsTo(\Config::get('rackbeat-integration-dashboard.connection_class', '\App\Connection'), 'created_by');
 	}
 
 	public function scopeNotFinished( Builder $query ) {

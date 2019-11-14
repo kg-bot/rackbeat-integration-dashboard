@@ -17,7 +17,7 @@ class JobLogger
 	 */
 	public function __invoke() {
 		$monolog = new Logger( 'job_logger' );
-		$level   = config( 'logging.channels.custom.level', 'debug' );
+        $level = \Config::get('logging.channels.custom.level', 'debug');
 		$handler = new JobLogDbHandler( $level );
 		$monolog->pushHandler( $handler );
 

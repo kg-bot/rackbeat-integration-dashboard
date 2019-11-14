@@ -16,8 +16,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Mail;
 use KgBot\RackbeatDashboard\Mail\JobFailed;
 use KgBot\RackbeatDashboard\Models\Job;
 use Throwable;
@@ -47,7 +45,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 	}
 
 	protected function registerContext() {
-		Config::set( 'rackbeat-integration-dashboard.context', $this->context() );
+        \Config::set('rackbeat-integration-dashboard.context', $this->context());
 	}
 
 	protected function context() {
@@ -79,12 +77,12 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 
 	protected function sendMailsOnFail( Throwable $e ) {
 
-		if ( Config::get( 'rackbeat-integration-dashboard.emails.send_on_fail', true ) === true ) {
+        if (\Config::get('rackbeat-integration-dashboard.emails.send_on_fail', true) === true) {
 
             $send = true;
-            $days = Config::get('rackbeat-integration-dashboard.emails.days', []);
-            $hours = Config::get('rackbeat-integration-dashboard.emails.hours', []);
-            $datetime = Carbon::now();
+            $days = \Config::get('rackbeat-integration-dashboard.emails.days', []);
+            $hours = \Config::get('rackbeat-integration-dashboard.emails.hours', []);
+            $datetime = \Carbon::now();
 
             if (count($days) > 0 && count($hours) > 0) {
 
@@ -120,7 +118,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 
             if ($send) {
 
-                $emails = Config::get('rackbeat-integration-dashboard.emails.addresses', []);
+                $emails = \Config::get('rackbeat-integration-dashboard.emails.addresses', []);
 
                 if (count(array_slice($emails, 1)) > 0) {
 
@@ -133,7 +131,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
                 if (count($emails) > 0) {
                     if ($cc === '') {
 
-                        Mail::to($emails[0])
+                        \Mail::to($emails[0])
                             ->queue(new JobFailed(
                                     $this->jobModel->owner->rackbeat_user_account_id,
                                     $this->jobModel->owner->id,
@@ -146,7 +144,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
                             );
                     } else {
 
-                        Mail::to($emails[0])
+                        \Mail::to($emails[0])
                             ->cc($cc)
                             ->queue(new JobFailed(
                                     $this->jobModel->owner->rackbeat_user_account_id,
@@ -165,12 +163,12 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 	}
 
 	protected function isWillBeRetry(): bool {
-		return is_null( $this->job->maxTries() )
+        return $this->job->maxTries() === null
 		       || $this->attempts() < $this->job->maxTries();
 	}
 
 	protected function detachContext() {
-		Config::set( 'rackbeat-integration-dashboard.context', null );
+        \Config::set('rackbeat-integration-dashboard.context', null);
 	}
 
 	public function execute() {

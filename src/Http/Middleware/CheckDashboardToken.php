@@ -3,7 +3,6 @@
 namespace KgBot\RackbeatDashboard\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Config;
 
 class CheckDashboardToken
 {
@@ -16,7 +15,7 @@ class CheckDashboardToken
 	 * @return mixed
 	 */
 	public function handle( $request, Closure $next ) {
-		if ( Config::get( 'rackbeat-integration-dashboard.oauth_token', null ) !== null && $request->hasHeader( 'X-Dashboard-Token' ) && $request->header( 'X-Dashboard-Token' ) === Config::get( 'rackbeat-integration-dashboard.oauth_token' ) ) {
+        if (\Config::get('rackbeat-integration-dashboard.oauth_token', null) !== null && $request->hasHeader('X-Dashboard-Token') && $request->header('X-Dashboard-Token') === \Config::get('rackbeat-integration-dashboard.oauth_token')) {
 
 			return $next( $request );
 		}

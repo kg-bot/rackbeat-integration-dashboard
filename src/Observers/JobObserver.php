@@ -10,7 +10,6 @@ namespace KgBot\RackbeatDashboard\Observers;
 
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Config;
 use KgBot\RackbeatDashboard\Models\Job;
 
 class JobObserver
@@ -31,9 +30,9 @@ class JobObserver
 	public function created( Job $job ) {
 		try {
 
-			$delay = ! is_null( $job->delay ) ? Carbon::now()->addMinutes( $job->delay ) : 0;
+            $delay = ($job->delay !== null) ? Carbon::now()->addMinutes($job->delay) : 0;
 
-			dispatch( new $job->command( $job, ...$job->args ) )->onQueue( $job->queue )->onConnection( Config::get( 'queue.default', 'redis' ) )->delay( $delay );
+            dispatch(new $job->command($job, ...$job->args))->onQueue($job->queue)->onConnection(\Config::get('queue.default', 'redis'))->delay($delay);
 		} catch ( \Throwable $e ) {
 			$job->delete();
 		}

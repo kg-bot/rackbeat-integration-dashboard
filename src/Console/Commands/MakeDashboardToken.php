@@ -60,7 +60,7 @@ class MakeDashboardToken extends Command
 	 * @return string
 	 */
 	protected function generateRandomKey() {
-		return Str::random( 255 );
+        return \Str::random(255);
 	}
 
 	/**
