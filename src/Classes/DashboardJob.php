@@ -82,7 +82,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
             $send = true;
             $days = \Config::get('rackbeat-integration-dashboard.emails.days', []);
             $hours = \Config::get('rackbeat-integration-dashboard.emails.hours', []);
-            $datetime = \Carbon::now();
+            $datetime = Carbon::now();
 
             if (count($days) > 0 && count($hours) > 0) {
 
