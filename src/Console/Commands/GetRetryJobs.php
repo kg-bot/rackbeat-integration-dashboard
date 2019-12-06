@@ -40,6 +40,7 @@ class GetRetryJobs extends Command
     {
         $columns = [
 
+            'id',
             'queue',
             'state',
             'progress',
@@ -62,6 +63,7 @@ class GetRetryJobs extends Command
 
         $headers = [
 
+            'id',
             'queue',
             'state',
             'progress',
