@@ -12,7 +12,7 @@ class GetRetryJobs extends Command
      *
      * @var string
      */
-    protected $signature = 'rb-integration-dashboard:retry-jobs {limit=10} {connection-id=*}';
+    protected $signature = 'rb-integration-dashboard:retry-jobs {limit=10} {connection?}';
 
     /**
      * The console command description.
@@ -38,12 +38,25 @@ class GetRetryJobs extends Command
      */
     public function handle()
     {
-        if ($this->hasArgument('connection-id') && $this->argument('connection-id') !== '*') {
+        $columns = [
 
-            $jobs = Job::where('created_by', $this->argument('connection-id'))->limit($this->argument('limit'))->get()->toArray();
+            'queue',
+            'state',
+            'progress',
+            'command',
+            'attempts',
+            'created_at',
+            'finished_at',
+            'title',
+            'delay',
+        ];
+
+        if (!empty($this->argument('connection'))) {
+
+            $jobs = Job::where('created_by', $this->argument('connection'))->whereState('retry')->limit($this->argument('limit'))->get($columns);
         } else {
 
-            $jobs = Job::limit($this->argument('limit'))->get()->toArray();
+            $jobs = Job::whereState('retry')->limit($this->argument('limit'))->get($columns);
         }
 
         $headers = [
@@ -55,7 +68,6 @@ class GetRetryJobs extends Command
             'attempts',
             'created_at',
             'finished_at',
-            'args',
             'title',
             'delay',
         ];
