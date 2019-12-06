@@ -12,7 +12,7 @@ class GetRetryJobs extends Command
      *
      * @var string
      */
-    protected $signature = 'rb-integration-dashboard:retry-jobs {limit=10} {connection-id?}';
+    protected $signature = 'rb-integration-dashboard:retry-jobs {limit=10} {connection-id=*}';
 
     /**
      * The console command description.
@@ -38,7 +38,7 @@ class GetRetryJobs extends Command
      */
     public function handle()
     {
-        if ($this->hasArgument('connection-id')) {
+        if ($this->hasArgument('connection-id') && $this->argument('connection-id') !== '*') {
 
             $jobs = Job::where('created_by', $this->argument('connection-id'))->limit($this->argument('limit'))->get()->toArray();
         } else {
