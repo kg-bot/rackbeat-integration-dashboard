@@ -9,6 +9,7 @@
 namespace KgBot\RackbeatDashboard;
 
 
+use App\Console\Commands\GetRetryJobs;
 use Illuminate\Support\ServiceProvider;
 use KgBot\RackbeatDashboard\Console\Commands\DeactivateDeadRackbeat;
 use KgBot\RackbeatDashboard\Console\Commands\MakeDashboardToken;
@@ -18,51 +19,52 @@ use KgBot\RackbeatDashboard\Observers\JobObserver;
 class RackbeatDashboardServiceProvider extends ServiceProvider
 {
 
-	/**
-	 * Boot.
-	 */
-	public function boot() {
+    /**
+     * Boot.
+     */
+    public function boot() {
 
-		/**
-		 * Default package config registration
-		 */
-		$configPath = __DIR__ . '/config/rackbeat-integration-dashboard.php';
+        /**
+         * Default package config registration
+         */
+        $configPath = __DIR__ . '/config/rackbeat-integration-dashboard.php';
 
-		$this->mergeConfigFrom( $configPath, 'rackbeat-integration-dashboard' );
+        $this->mergeConfigFrom( $configPath, 'rackbeat-integration-dashboard' );
 
-		$configPath = __DIR__ . '/config/rackbeat-integration-dashboard.php';
+        $configPath = __DIR__ . '/config/rackbeat-integration-dashboard.php';
 
-		if ( function_exists( 'config_path' ) ) {
+        if ( function_exists( 'config_path' ) ) {
 
-			$publishPath = config_path( 'rackbeat-integration-dashboard.php' );
+            $publishPath = config_path( 'rackbeat-integration-dashboard.php' );
 
-		} else {
+        } else {
 
-			$publishPath = base_path( 'config/rackbeat-integration-dashboard.php' );
+            $publishPath = base_path( 'config/rackbeat-integration-dashboard.php' );
 
-		}
+        }
 
-		$this->publishes( [ $configPath => $publishPath ], 'config' );
+        $this->publishes( [ $configPath => $publishPath ], 'config' );
 
-		$this->loadRoutesFrom( __DIR__ . '/routes.php' );
+        $this->loadRoutesFrom( __DIR__ . '/routes.php' );
 
-		$this->loadMigrationsFrom( __DIR__ . '/database/migrations' );
+        $this->loadMigrationsFrom( __DIR__ . '/database/migrations' );
 
-		$this->loadViewsFrom( __DIR__ . '/resources/views', 'rackbeat-dashboard' );
+        $this->loadViewsFrom( __DIR__ . '/resources/views', 'rackbeat-dashboard' );
 
-		$this->publishes( [
-			__DIR__ . '/resources/views' => resource_path( 'views/vendor/rackbeat-dashboard' ),
-		] );
+        $this->publishes( [
+            __DIR__ . '/resources/views' => resource_path( 'views/vendor/rackbeat-dashboard' ),
+        ] );
 
-		if ( $this->app->runningInConsole() ) {
-			$this->commands( [
-				MakeDashboardToken::class,
+        if ( $this->app->runningInConsole() ) {
+            $this->commands( [
+                MakeDashboardToken::class,
                 DeactivateDeadRackbeat::class,
-			] );
-		}
+                GetRetryJobs::class,
+            ] );
+        }
 
-		Job::observe( JobObserver::class );
-	}
+        Job::observe( JobObserver::class );
+    }
 
-	public function register() { }
+    public function register() { }
 }
