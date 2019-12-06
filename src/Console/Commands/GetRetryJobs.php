@@ -50,6 +50,7 @@ class GetRetryJobs extends Command
             'finished_at',
             'title',
             'delay',
+            'created_by',
         ];
 
         $query = Job::query()->where('state', 'retry')->orderBy($this->argument('order-by'), $this->argument('sort-dir'))->limit($this->argument('limit'));
@@ -73,6 +74,7 @@ class GetRetryJobs extends Command
             'finished_at',
             'title',
             'delay',
+            'created_by',
         ];
 
         $this->table($headers, $jobs);
