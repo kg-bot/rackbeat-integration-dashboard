@@ -9,9 +9,9 @@
 namespace KgBot\RackbeatDashboard;
 
 
-use App\Console\Commands\GetRetryJobs;
 use Illuminate\Support\ServiceProvider;
 use KgBot\RackbeatDashboard\Console\Commands\DeactivateDeadRackbeat;
+use KgBot\RackbeatDashboard\Console\Commands\GetRetryJobs;
 use KgBot\RackbeatDashboard\Console\Commands\MakeDashboardToken;
 use KgBot\RackbeatDashboard\Models\Job;
 use KgBot\RackbeatDashboard\Observers\JobObserver;
