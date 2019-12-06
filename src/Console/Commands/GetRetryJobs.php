@@ -12,7 +12,7 @@ class GetRetryJobs extends Command
      *
      * @var string
      */
-    protected $signature = 'rb-integration-dashboard:retry-jobs {limit=10} {connection?}';
+    protected $signature = 'rb-integration-dashboard:retry-jobs {limit=10} {order-by=created_at} {sort-dir=desc} {connection?}';
 
     /**
      * The console command description.
@@ -51,13 +51,14 @@ class GetRetryJobs extends Command
             'delay',
         ];
 
+        $query = Job::query()->where('state', 'retry')->orderBy($this->argument('order-by'), $this->argument('sort-dir'))->limit($this->argument('limit'));
+
         if (!empty($this->argument('connection'))) {
 
-            $jobs = Job::where('created_by', $this->argument('connection'))->whereState('retry')->limit($this->argument('limit'))->get($columns);
-        } else {
-
-            $jobs = Job::whereState('retry')->limit($this->argument('limit'))->get($columns);
+            $query->where('created_by', $this->argument('connection'));
         }
+
+        $jobs = $query->get($columns);
 
         $headers = [
 
