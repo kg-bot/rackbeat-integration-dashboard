@@ -31,8 +31,8 @@ use KgBot\RackbeatDashboard\Notifications\StateMessage;
  * @property int|null                   $progress
  * @property int                        $attempts
  * @property int                        $created_by
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $finished_at
+ * @property Carbon\Carbon $created_at
+ * @property Carbon\Carbon $finished_at
  * @property User                       $owner
  * @property JobLog[]|Collection        $logs
  */
@@ -153,8 +153,9 @@ class Job extends Model
 		$this->stateChanged();
 	}
 
-	public function retry() {
-		if ( $this->state === JobState::RETRY ) {
+    public function retry($force = false)
+    {
+        if ($force || $this->state === JobState::RETRY) {
 
 			self::create( [
 
