@@ -12,11 +12,14 @@
 
 	@if($line !== null)
 		<br>
-        Line: <strong>{{ $line }}</strong>
+		Line: <strong>{{ $line }}</strong>
 	@endif
 
 	<br>
 	Job ID: <strong>{{ $job_id }}</strong>
+
+	<br>
+	Job command: <strong>{{ $command }}</strong>
 
 	<br>
 	Failed at: <strong>{{ $failed_at }}</strong>

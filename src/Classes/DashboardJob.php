@@ -139,7 +139,8 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
                                     Carbon::now()->toDateString(),
                                     $this->jobModel->id,
                                     $this->jobModel->owner->rackbeat_company_name ?? '',
-                                    $e
+                                    $e,
+                                    $this->jobModel->command
                                 )
                             );
                     } else {
@@ -153,7 +154,8 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
                                     Carbon::now()->toDateString(),
                                     $this->jobModel->id,
                                     $this->jobModel->owner->rackbeat_company_name ?? '',
-                                    $e
+                                    $e,
+                                    $this->jobModel->command
                                 )
                             );
                     }

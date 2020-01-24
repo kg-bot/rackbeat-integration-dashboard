@@ -19,22 +19,24 @@ class JobFailed extends Mailable
     public $rackbeat_company_name;
     public $file = null;
     public $line = null;
+    public $command;
 
 	/**
 	 * Create a new message instance.
 	 *
 	 * @return void
 	 */
-    public function __construct($rackbeat_user_account_id, $connection_id, $message, $failed_at, $job_id, $rackbeat_company_name = '', $exception = null)
+    public function __construct($rackbeat_user_account_id, $connection_id, $message, $failed_at, $job_id, $rackbeat_company_name = '', $exception = null, $command = '')
     {
 
         $this->rackbeat_user_account_id = $rackbeat_user_account_id;
-		$this->connection_id    = $connection_id;
-		$this->error_message    = $message;
-		$this->failed_at        = $failed_at;
-		$this->job_id           = $job_id;
+        $this->connection_id = $connection_id;
+        $this->error_message = $message;
+        $this->failed_at = $failed_at;
+        $this->job_id = $job_id;
         $this->plugin_name = \Config::get('app.plugin_name', '');
         $this->rackbeat_company_name = $rackbeat_company_name;
+        $this->command = $command;
         if ($exception !== null) {
 
             $this->file = $exception->getFile();
