@@ -53,7 +53,7 @@ class ClearOldJobs extends Command
             'rackbeat_account',
         ]);
         
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->with('owner')->each(function ($jobs) use ($handle) {
+        Job::whereDate('created_at', '<', Carbon::now()->subDays(7))->with('owner')->each(function ($job) use ($handle) {
             fputcsv($handle, [
 
                 $job->id,
@@ -67,8 +67,8 @@ class ClearOldJobs extends Command
         });
 
         fclose($handle);
-
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->delete();
+      
+        Job::whereDate('created_at', '<', Carbon::now()->subDays(7))->delete();
 
         \Log::debug('Jobs exported and deleted');
     }
