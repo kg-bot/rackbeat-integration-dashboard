@@ -77,7 +77,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 
 	protected function sendMailsOnFail( Throwable $e ) {
 
-        if (\Config::get('rackbeat-integration-dashboard.emails.send_on_fail', true) === true) {
+        if ($this->jobModel->owner !== null && \Config::get('rackbeat-integration-dashboard.emails.send_on_fail', true) === true) {
 
             $send = true;
             $days = \Config::get('rackbeat-integration-dashboard.emails.days', []);

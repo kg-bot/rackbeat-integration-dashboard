@@ -116,11 +116,13 @@ class Job extends Model
 	}
 
 	protected function stateChanged() {
-		$this->notifyNow( new StateMessage( $this->state ) );
-		$this->owner->notifyNow(
-			$this->jobState()->notice( $this->identity() )
-		);
-	}
+        $this->notifyNow(new StateMessage($this->state));
+        if ($this->owner !== null) {
+            $this->owner->notifyNow(
+                $this->jobState()->notice($this->identity())
+            );
+        }
+    }
 
 	public function jobState(): JobState {
 		return new JobState( $this->state ?? JobState::PENDING );
