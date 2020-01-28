@@ -12,6 +12,7 @@ class DashboardJobExport extends DashboardJob
 
     public function execute()
     {
+        \Log::debug('DashboardJob started');
         $handle = fopen(storage_path('app/jobs-' . Carbon::now()->toDateString() . '.csv'), 'w');
 
         fputcsv($handle, [
@@ -25,6 +26,7 @@ class DashboardJobExport extends DashboardJob
 
         Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle) {
 
+            \Log::debug('Chunk fetched');
             foreach ($jobs as $job) {
                 fputcsv($handle, [
 
