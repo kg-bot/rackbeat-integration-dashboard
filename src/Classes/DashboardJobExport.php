@@ -12,10 +12,8 @@ class DashboardJobExport extends DashboardJob
 
     public function execute()
     {
-        // Open output stream
         $handle = fopen(storage_path('app/jobs-' . Carbon::now()->toDateString() . '.csv'), 'w');
 
-        // Add CSV headers
         fputcsv($handle, [
             'id',
             'command',
