@@ -2,7 +2,6 @@
 
 namespace KgBot\RackbeatDashboard\Console\Commands;
 
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use KgBot\RackbeatDashboard\Classes\DashboardJobExport;
 use KgBot\RackbeatDashboard\Models\Job;
@@ -40,6 +39,7 @@ class ClearOldJobs extends Command
      */
     public function handle()
     {
+
         Job::create([
 
             'command' => DashboardJobExport::class,
@@ -47,15 +47,5 @@ class ClearOldJobs extends Command
             'queue' => config('queue.connections.redis.queue'),
             'title' => 'Export old jobs',
         ]);
-
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) {
-
-            foreach ($jobs as $job) {
-
-                $job->delete();
-            }
-        });
-
-        return true;
     }
 }
