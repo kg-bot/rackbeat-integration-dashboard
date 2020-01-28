@@ -14,15 +14,16 @@ return [
 	'connection_class' => Connection::class,
 	'oauth_token'      => env( 'RACKBEAT_DASHBOARD_TOKEN' ),
 
-	'emails' => [
+    'emails' => [
 
-		'addresses'    => [
+        'addresses' => [
 
-			'ninicstefan94@gmail.com',
-			'stn@rackbeat.com'
-		],
-		'send_on_fail' => env( 'RACKBEAT_DASHBOARD_SEND_EMAIL_ON_FAIL', true ),
+            'ninicstefan94@gmail.com',
+            'stn@rackbeat.com',
+        ],
+        'send_on_fail' => env('RACKBEAT_DASHBOARD_SEND_EMAIL_ON_FAIL', true),
         'days' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         'hours' => ['08', '09', '10', '11', '12', '13', '14', '15', '16', '17'],
-	]
+    ],
+    'should_notify' => env('RACKBEAT_DASHBOARD_SHOULD_NOTIFY', false),
 ];

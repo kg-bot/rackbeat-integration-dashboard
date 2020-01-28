@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
 use KgBot\RackbeatDashboard\Classes\JobState;
 use KgBot\RackbeatDashboard\Notifications\LogMessage;
 use KgBot\RackbeatDashboard\Notifications\Progress;
@@ -90,37 +91,46 @@ class Job extends Model
 		$this->state    = JobState::PENDING;
 
 		return $this;
-	}
+    }
 
-	public function setArgsAttribute( $value ) {
-		$this->attributes['args'] = json_encode( $value ) ?? [];
-	}
+    public function setArgsAttribute($value)
+    {
+        $this->attributes['args'] = json_encode($value) ?? [];
+    }
 
-	public function getArgsAttribute() {
-		return json_decode( $this->attributes['args'] );
-	}
+    public function getArgsAttribute()
+    {
+        return json_decode($this->attributes['args']);
+    }
 
-	public function updateProgress( int $value, $message = null ) {
-		if ( $message ) {
-			$this->notifyNow( new LogMessage( $message ) );
-		}
-		$this->progress = $value;
-		$this->save();
-		$this->notifyNow( new Progress( $value ) );
-	}
+    public function updateProgress(int $value, $message = null)
+    {
+        if ($message && $this->shouldNotify()) {
+            $this->notifyNow(new LogMessage($message));
+        }
+        $this->progress = $value;
+        $this->save();
+        if ($this->shouldNotify()) {
+            $this->notifyNow(new Progress($value));
+        }
+    }
 
-	public function activate() {
-		$this->state = JobState::PROCESSING;
-		$this->save();
-		$this->stateChanged();
-	}
+    public function activate()
+    {
+        $this->state = JobState::PROCESSING;
+        $this->save();
+        $this->stateChanged();
+    }
 
-	protected function stateChanged() {
-        $this->notifyNow(new StateMessage($this->state));
-        if ($this->owner !== null) {
-            $this->owner->notifyNow(
-                $this->jobState()->notice($this->identity())
-            );
+    protected function stateChanged()
+    {
+        if ($this->shouldNotify()) {
+            $this->notifyNow(new StateMessage($this->state));
+            if ($this->owner !== null) {
+                $this->owner->notifyNow(
+                    $this->jobState()->notice($this->identity())
+                );
+            }
         }
     }
 
@@ -168,14 +178,20 @@ class Job extends Model
 				'created_by' => $this->created_by,
 			] );
 
-			$this->delete();
-		} else {
+            $this->delete();
+        } else {
 
-			throw new Exception( 'This job can\'t be retried because it\'s in ' . $this->state . ' state.' );
-		}
-	}
+            throw new Exception('This job can\'t be retried because it\'s in ' . $this->state . ' state.');
+        }
+    }
 
-	public function receivesBroadcastNotificationsOn() {
-		return 'Job.' . $this->id;
-	}
+    public function receivesBroadcastNotificationsOn()
+    {
+        return 'Job.' . $this->id;
+    }
+
+    public function shouldNotify()
+    {
+        return Config::get('rackbeat-integration-dashboard.should_notify');
+    }
 }
