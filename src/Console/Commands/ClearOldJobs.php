@@ -42,7 +42,6 @@ class ClearOldJobs extends Command
 
         \Log::debug('Running clear job');
         $handle = fopen(storage_path('app/jobs-' . Carbon::now()->toDateString() . '.csv'), 'w');
-        $count = 0;
 
         fputcsv($handle, [
             'id',
@@ -54,7 +53,7 @@ class ClearOldJobs extends Command
             'rackbeat_account',
         ]);
 
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle, $count) {
+        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle) {
 
             \Log::debug('Chunk fetched.');
             foreach ($jobs as $job) {
@@ -70,12 +69,12 @@ class ClearOldJobs extends Command
                 ]);
             }
 
-            $job->delete();
-            $count++;
         });
 
         fclose($handle);
 
-        \Log::debug($count . 'jobs exported and deleted');
+        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->delete();
+
+        \Log::debug('Jobs exported and deleted');
     }
 }
