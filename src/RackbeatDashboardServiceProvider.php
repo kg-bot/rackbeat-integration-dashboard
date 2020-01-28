@@ -10,6 +10,7 @@ namespace KgBot\RackbeatDashboard;
 
 
 use Illuminate\Support\ServiceProvider;
+use KgBot\RackbeatDashboard\Console\Commands\ClearOldJobs;
 use KgBot\RackbeatDashboard\Console\Commands\DeactivateDeadRackbeat;
 use KgBot\RackbeatDashboard\Console\Commands\GetRetryJobs;
 use KgBot\RackbeatDashboard\Console\Commands\MakeDashboardToken;
@@ -56,10 +57,11 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
         ] );
 
         if ( $this->app->runningInConsole() ) {
-            $this->commands( [
+            $this->commands([
                 MakeDashboardToken::class,
                 DeactivateDeadRackbeat::class,
                 GetRetryJobs::class,
+                ClearOldJobs::class,
             ] );
         }
 
