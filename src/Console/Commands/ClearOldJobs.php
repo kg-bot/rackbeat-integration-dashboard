@@ -54,21 +54,16 @@ class ClearOldJobs extends Command
         ]);
         
         Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->with('owner')->each(function ($jobs) use ($handle) {
-            
-            \Log::debug('Chunk fetched.');
-            foreach ($jobs as $job) {
-                fputcsv($handle, [
+            fputcsv($handle, [
 
-                    $job->id,
-                    $job->command,
-                    $job->created_by,
-                    $job->created_at,
-                    $job->finished_at,
-                    $job->title,
-                    ($job->owner !== null) ? ($job->owner->rackbeat_user_account_id ?? '') : '',
-                ]);
-            }
-
+                $job->id,
+                $job->command,
+                $job->created_by,
+                $job->created_at,
+                $job->finished_at,
+                $job->title,
+                ($job->owner !== null) ? ($job->owner->rackbeat_user_account_id ?? '') : '',
+            ]);
         });
 
         fclose($handle);
