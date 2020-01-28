@@ -12,7 +12,9 @@ class DashboardJobExport extends DashboardJob
 
     public function execute()
     {
+        \Log::debug('Running clear job');
         $handle = fopen(storage_path('app/jobs-' . Carbon::now()->toDateString() . '.csv'), 'w');
+        $count = 0;
 
         fputcsv($handle, [
             'id',
@@ -24,8 +26,9 @@ class DashboardJobExport extends DashboardJob
             'rackbeat_account',
         ]);
 
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle) {
+        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle, $count) {
 
+            \Log::debug('Chunk fetched.');
             foreach ($jobs as $job) {
                 fputcsv($handle, [
 
@@ -38,11 +41,14 @@ class DashboardJobExport extends DashboardJob
                     ($job->owner !== null) ? ($job->owner->rackbeat_user_account_id ?? '') : '',
                 ]);
             }
+
+            $job->delete();
+            $count++;
         });
 
         fclose($handle);
 
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->delete();
+        \Log::debug($count . 'jobs exported and deleted');
     }
 
     public function fail($exception = null)
