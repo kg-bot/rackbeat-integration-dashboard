@@ -16,6 +16,13 @@ class DashboardJobExport implements FromCollection, ShouldQueue
 
     public function collection()
     {
-        return Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->get();
+        $entries = collect();
+
+        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($entries) {
+
+            $entries->push($jobs);
+        });
+
+        return $entries;
     }
 }

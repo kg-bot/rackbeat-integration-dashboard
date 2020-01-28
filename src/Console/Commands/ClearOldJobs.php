@@ -44,7 +44,13 @@ class ClearOldJobs extends Command
     {
         (new DashboardJobExport())->store('jobs-' . Carbon::now()->toDateString() . '.csv', 'local', Excel::CSV)->allOnQueue(Config::get('queue.connections.redis.queue'));
 
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->delete();
+        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) {
+
+            foreach ($jobs as $job) {
+
+                $job->delete();
+            }
+        });
 
         return true;
     }
