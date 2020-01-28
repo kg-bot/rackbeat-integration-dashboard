@@ -52,9 +52,9 @@ class ClearOldJobs extends Command
             'title',
             'rackbeat_account',
         ]);
-
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle) {
-
+        
+        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->with('owner')->each(function ($jobs) use ($handle) {
+            
             \Log::debug('Chunk fetched.');
             foreach ($jobs as $job) {
                 fputcsv($handle, [
