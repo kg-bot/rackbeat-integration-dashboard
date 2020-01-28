@@ -53,7 +53,7 @@ class ClearOldJobs extends Command
             'rackbeat_account',
         ]);
 
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle) {
+        Job::whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle) {
 
             \Log::debug('Chunk fetched.');
             foreach ($jobs as $job) {
@@ -73,7 +73,7 @@ class ClearOldJobs extends Command
 
         fclose($handle);
 
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->delete();
+        Job::whereDate('created_at', '<', Carbon::now()->subDays(7))->delete();
 
         \Log::debug('Jobs exported and deleted');
     }
