@@ -5,24 +5,41 @@ namespace KgBot\RackbeatDashboard\Classes;
 
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use KgBot\RackbeatDashboard\Models\Job;
-use Maatwebsite\Excel\Concerns\Exportable;
-use Maatwebsite\Excel\Concerns\FromCollection;
 
-class DashboardJobExport implements FromCollection, ShouldQueue
+class DashboardJobExport extends DashboardJob
 {
-    use Exportable;
 
-    public function collection()
+    public function execute()
     {
-        $entries = collect();
+        // Open output stream
+        $handle = fopen(storage_path('app/jobs-' . Carbon::now()->toDateString() . '.csv'), 'w');
 
-        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($entries) {
+        // Add CSV headers
+        fputcsv($handle, [
+            'id',
+            'command',
+            'created_by',
+            'created_at',
+            'finished_at',
+            'title',
+        ]);
 
-            $entries->push($jobs);
+        Job::whereState('success')->whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle) {
+
+            foreach ($jobs as $job) {
+                fputcsv($handle, [
+
+                    $job->id,
+                    $job->command,
+                    $job->created_by,
+                    $job->created_at,
+                    $job->finished_at,
+                    $job->title,
+                ]);
+            }
         });
 
-        return $entries;
+        fclose($handle);
     }
 }
