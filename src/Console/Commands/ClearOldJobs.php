@@ -52,27 +52,22 @@ class ClearOldJobs extends Command
             'title',
             'rackbeat_account',
         ]);
+        
+        Job::whereDate('created_at', '<', Carbon::now()->subDays(7))->with('owner')->each(function ($job) use ($handle) {
+            fputcsv($handle, [
 
-        Job::whereDate('created_at', '<', Carbon::now()->subDays(7))->chunk(5000, function ($jobs) use ($handle) {
-
-            \Log::debug('Chunk fetched.');
-            foreach ($jobs as $job) {
-                fputcsv($handle, [
-
-                    $job->id,
-                    $job->command,
-                    $job->created_by,
-                    $job->created_at,
-                    $job->finished_at,
-                    $job->title,
-                    ($job->owner !== null) ? ($job->owner->rackbeat_user_account_id ?? '') : '',
-                ]);
-            }
-
+                $job->id,
+                $job->command,
+                $job->created_by,
+                $job->created_at,
+                $job->finished_at,
+                $job->title,
+                ($job->owner !== null) ? ($job->owner->rackbeat_user_account_id ?? '') : '',
+            ]);
         });
 
         fclose($handle);
-
+      
         Job::whereDate('created_at', '<', Carbon::now()->subDays(7))->delete();
 
         \Log::debug('Jobs exported and deleted');
