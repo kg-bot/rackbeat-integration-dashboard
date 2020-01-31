@@ -9,6 +9,7 @@
 namespace KgBot\RackbeatDashboard;
 
 
+use App\Console\Commands\InstallMissingPluginUninstallWebhooks;
 use Illuminate\Support\ServiceProvider;
 use KgBot\RackbeatDashboard\Console\Commands\ClearOldJobs;
 use KgBot\RackbeatDashboard\Console\Commands\DeactivateDeadRackbeat;
@@ -62,6 +63,7 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
                 DeactivateDeadRackbeat::class,
                 GetRetryJobs::class,
                 ClearOldJobs::class,
+                InstallMissingPluginUninstallWebhooks::class,
             ] );
         }
 
