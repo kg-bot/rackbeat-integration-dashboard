@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace KgBot\RackbeatDashboard\Console\Commands;
 
 use Illuminate\Console\Command;
 
