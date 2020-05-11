@@ -87,7 +87,6 @@ class Job extends Model
 
 	public function fillDefaults() {
 		$this->progress = 0;
-		$this->attempts = 0;
 		$this->state    = JobState::PENDING;
 
 		return $this;
