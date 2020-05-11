@@ -171,6 +171,7 @@ class Job extends Model
 				'title'      => $this->title,
 				'created_by' => $this->created_by,
 				'delay'      => $after,
+				'attempts'   => $this->attempts
 			] );
 
 			$this->delete();
