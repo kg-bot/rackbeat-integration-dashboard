@@ -46,7 +46,7 @@ class Job extends Model
 	const CREATED_AT = 'created_at';
 	public    $timestamps = true;
 	protected $primaryKey = 'id';
-	protected $fillable   = [ 'command', 'queue', 'payload', 'created_by', 'args', 'title', 'delay' ];
+	protected $fillable   = [ 'command', 'queue', 'payload', 'created_by', 'args', 'title', 'delay', 'attempts' ];
 
 	protected $casts = [
 		'payload'     => 'array',
@@ -172,6 +172,7 @@ class Job extends Model
 				'title'      => $this->title,
 				'created_by' => $this->created_by,
 				'delay'      => $after,
+				'attempts'   => $this->attempts + 1
 			] );
 
 			$this->delete();
