@@ -166,7 +166,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 
 	protected function isWillBeRetry(): bool {
         return $this->job->maxTries() === null
-               || ( $this->attempts() < $this->job->maxTries() && $this->jobModel->attempts <= $this->job->maxTries() );
+               || ( $this->attempts() < $this->job->maxTries() && $this->jobModel->attempts <= $this->attempts() );
 	}
 
 	protected function detachContext() {
