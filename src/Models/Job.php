@@ -23,19 +23,19 @@ use KgBot\RackbeatDashboard\Notifications\Progress;
 use KgBot\RackbeatDashboard\Notifications\StateMessage;
 
 /**
- * @property int                        $id
- * @property string                     $queue
- * @property string                     $command
- * @property array|null                 $payload
- * @property array|null                 $report
- * @property string                     $state
- * @property int|null                   $progress
- * @property int                        $attempts
- * @property int                        $created_by
- * @property Carbon\Carbon $created_at
- * @property Carbon\Carbon $finished_at
- * @property User                       $owner
- * @property JobLog[]|Collection        $logs
+ * @property int                 $id
+ * @property string              $queue
+ * @property string              $command
+ * @property array|null          $payload
+ * @property array|null          $report
+ * @property string              $state
+ * @property int|null            $progress
+ * @property int                 $attempts
+ * @property int                 $created_by
+ * @property Carbon\Carbon       $created_at
+ * @property Carbon\Carbon       $finished_at
+ * @property User                $owner
+ * @property JobLog[]|Collection $logs
  */
 class Job extends Model
 {
@@ -66,7 +66,7 @@ class Job extends Model
 	 * @return BelongsTo
 	 */
 	public function owner() {
-        return $this->belongsTo(\Config::get('rackbeat-integration-dashboard.connection_class', '\App\Connection'), 'created_by');
+		return $this->belongsTo( \Config::get( 'rackbeat-integration-dashboard.connection_class', '\App\Connection' ), 'created_by' );
 	}
 
 	public function scopeNotFinished( Builder $query ) {
@@ -91,48 +91,43 @@ class Job extends Model
 		$this->state    = JobState::PENDING;
 
 		return $this;
-    }
+	}
 
-    public function setArgsAttribute($value)
-    {
-        $this->attributes['args'] = json_encode($value) ?? [];
-    }
+	public function setArgsAttribute( $value ) {
+		$this->attributes['args'] = json_encode( $value ) ?? [];
+	}
 
-    public function getArgsAttribute()
-    {
-        return json_decode($this->attributes['args']);
-    }
+	public function getArgsAttribute() {
+		return json_decode( $this->attributes['args'] );
+	}
 
-    public function updateProgress(int $value, $message = null)
-    {
-        if ($message && $this->shouldNotify()) {
-            $this->notifyNow(new LogMessage($message));
-        }
-        $this->progress = $value;
-        $this->save();
-        if ($this->shouldNotify()) {
-            $this->notifyNow(new Progress($value));
-        }
-    }
+	public function updateProgress( int $value, $message = null ) {
+		if ( $message && $this->shouldNotify() ) {
+			$this->notifyNow( new LogMessage( $message ) );
+		}
+		$this->progress = $value;
+		$this->save();
+		if ( $this->shouldNotify() ) {
+			$this->notifyNow( new Progress( $value ) );
+		}
+	}
 
-    public function activate()
-    {
-        $this->state = JobState::PROCESSING;
-        $this->save();
-        $this->stateChanged();
-    }
+	public function activate() {
+		$this->state = JobState::PROCESSING;
+		$this->save();
+		$this->stateChanged();
+	}
 
-    protected function stateChanged()
-    {
-        if ($this->shouldNotify()) {
-            $this->notifyNow(new StateMessage($this->state));
-            if ($this->owner !== null) {
-                $this->owner->notifyNow(
-                    $this->jobState()->notice($this->identity())
-                );
-            }
-        }
-    }
+	protected function stateChanged() {
+		if ( $this->shouldNotify() ) {
+			$this->notifyNow( new StateMessage( $this->state ) );
+			if ( $this->owner !== null ) {
+				$this->owner->notifyNow(
+					$this->jobState()->notice( $this->identity() )
+				);
+			}
+		}
+	}
 
 	public function jobState(): JobState {
 		return new JobState( $this->state ?? JobState::PENDING );
@@ -151,6 +146,7 @@ class Job extends Model
 		$this->attempts += 1;
 		$this->save();
 		$this->stateChanged();
+		$this->retry( true, Config::get( 'rackbeat-integration-dashboard.retry_after', 1 ) );
 	}
 
 	public function finish( bool $success = true ) {
@@ -165,9 +161,8 @@ class Job extends Model
 		$this->stateChanged();
 	}
 
-    public function retry($force = false)
-    {
-        if ($force || $this->state === JobState::RETRY) {
+	public function retry( $force = false, $after = null ) {
+		if ( $force || $this->state === JobState::RETRY ) {
 
 			self::create( [
 
@@ -176,22 +171,21 @@ class Job extends Model
 				'args'       => $this->args,
 				'title'      => $this->title,
 				'created_by' => $this->created_by,
+				'delay'      => $after,
 			] );
 
-            $this->delete();
-        } else {
+			$this->delete();
+		} else {
 
-            throw new Exception('This job can\'t be retried because it\'s in ' . $this->state . ' state.');
-        }
-    }
+			throw new Exception( 'This job can\'t be retried because it\'s in ' . $this->state . ' state.' );
+		}
+	}
 
-    public function receivesBroadcastNotificationsOn()
-    {
-        return 'Job.' . $this->id;
-    }
+	public function receivesBroadcastNotificationsOn() {
+		return 'Job.' . $this->id;
+	}
 
-    public function shouldNotify()
-    {
-        return Config::get('rackbeat-integration-dashboard.should_notify');
-    }
+	public function shouldNotify() {
+		return Config::get( 'rackbeat-integration-dashboard.should_notify' );
+	}
 }
