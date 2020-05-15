@@ -9,8 +9,10 @@
 namespace KgBot\RackbeatDashboard\Http\Controllers;
 
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -20,12 +22,25 @@ class JobsController extends Controller
 {
 	/**
 	 * @param Request $request
+	 * @param int     $rackbeat_account_id
 	 *
 	 * @return JsonResponse
 	 */
 	public function index( Request $request, $rackbeat_account_id ) {
 		try {
-			$jobs = Job::OfRackbeatAccount( $rackbeat_account_id )->latest()->paginate( $request->get( 'per_page', 10 ), [ '*' ], 'page', $request->get( 'page', 1 ) );
+			/** @var Builder $query */
+			$query = Job::OfRackbeatAccount( $rackbeat_account_id );
+
+			if ( $request->filled( 'state' ) ) {
+				$query->where( 'state', $request->get( 'state' ) );
+			}
+
+			if ( $request->filled( 'created_at' ) ) {
+				$query->whereDate( 'created_at', '>=', Carbon::parse( ( $request->get( 'created_at' ) ) ) );
+			}
+
+
+			$jobs = $query->latest()->paginate( $request->get( 'per_page', 10 ), [ '*' ], 'page', $request->get( 'page', 1 ) );
 
 			return response()->json( compact( 'jobs' ) );
 
