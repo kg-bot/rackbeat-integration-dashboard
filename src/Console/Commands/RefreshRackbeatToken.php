@@ -41,6 +41,12 @@ class RefreshRackbeatToken extends Command
 			if ( method_exists( $connections, 'refreshRackbeatToken' ) ) {
 				try {
 					$connection->refreshRackbeatToken();
+
+					\Log::debug( 'Connection\'s ' . $connection->id . ' Rackbeat token has been refreshed.' );
+
+					if ( method_exists( $connection, 'logDebug' ) ) {
+						$connection->logDebug( 'Rackbeat token has been refreshed.' );
+					}
 				} catch ( \Exception $exception ) {
 					\Log::error( 'Can\'t refresh RB token, connection ' . $connection->id . ', because: ' . $exception->getMessage() );
 
