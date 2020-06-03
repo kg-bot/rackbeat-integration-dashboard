@@ -15,6 +15,7 @@ use KgBot\RackbeatDashboard\Console\Commands\DeactivateDeadRackbeat;
 use KgBot\RackbeatDashboard\Console\Commands\GetRetryJobs;
 use KgBot\RackbeatDashboard\Console\Commands\InstallMissingPluginUninstallWebhooks;
 use KgBot\RackbeatDashboard\Console\Commands\MakeDashboardToken;
+use KgBot\RackbeatDashboard\Console\Commands\RefreshRackbeatToken;
 use KgBot\RackbeatDashboard\Models\Job;
 use KgBot\RackbeatDashboard\Observers\JobObserver;
 
@@ -58,12 +59,13 @@ class RackbeatDashboardServiceProvider extends ServiceProvider
         ] );
 
         if ( $this->app->runningInConsole() ) {
-            $this->commands([
-                MakeDashboardToken::class,
-                DeactivateDeadRackbeat::class,
-                GetRetryJobs::class,
-                ClearOldJobs::class,
-                InstallMissingPluginUninstallWebhooks::class,
+            $this->commands( [
+	            MakeDashboardToken::class,
+	            DeactivateDeadRackbeat::class,
+	            GetRetryJobs::class,
+	            ClearOldJobs::class,
+	            InstallMissingPluginUninstallWebhooks::class,
+	            RefreshRackbeatToken::class,
             ] );
         }
 
