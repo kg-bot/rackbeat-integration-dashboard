@@ -38,7 +38,7 @@ class RefreshRackbeatToken extends Command
 		$connections = $this->laravel['config']['rackbeat-integration-dashboard.connection_class']::Active()->get();
 
 		foreach ( $connections as $connection ) {
-			if ( method_exists( $connections, 'refreshRackbeatToken' ) ) {
+			if ( method_exists( $connection, 'refreshRackbeatToken' ) ) {
 				try {
 					$connection->refreshRackbeatToken();
 
