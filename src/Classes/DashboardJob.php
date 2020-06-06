@@ -79,48 +79,21 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 
         if ($this->jobModel->owner !== null && \Config::get('rackbeat-integration-dashboard.emails.send_on_fail', true) === true) {
 
-            $send = true;
-            $days = \Config::get('rackbeat-integration-dashboard.emails.days', []);
-            $hours = \Config::get('rackbeat-integration-dashboard.emails.hours', []);
-            $datetime = Carbon::now();
+	        $send     = false;
+	        $days     = \Config::get( 'rackbeat-integration-dashboard.emails.days', [] );
+	        $hours    = \Config::get( 'rackbeat-integration-dashboard.emails.hours', [] );
+	        $datetime = Carbon::now();
 
-            if (count($days) > 0 && count($hours) > 0) {
+	        if ( in_array( $datetime->englishDayOfWeek, $days ) && in_array( $datetime->hour, $hours ) ) {
 
-                if (in_array($datetime->englishDayOfWeek, $days) && in_array($datetime->hour, $hours)) {
+		        $send = true;
+	        }
 
-                    $send = true;
-                } else {
+	        if ( $send ) {
 
-                    $send = false;
-                }
-            } elseif (count($days) > 0) {
+		        $emails = \Config::get( 'rackbeat-integration-dashboard.emails.addresses', [] );
 
-                if (in_array($datetime->englishDayOfWeek, $days)) {
-
-                    $send = true;
-                } else {
-
-                    $send = false;
-                }
-            } elseif (count($hours) > 0) {
-
-                if (in_array($datetime->hour, $hours)) {
-
-                    $send = true;
-                } else {
-
-                    $send = false;
-                }
-            } else {
-
-                $send = false;
-            }
-
-            if ($send) {
-
-                $emails = \Config::get('rackbeat-integration-dashboard.emails.addresses', []);
-
-                if (count(array_slice($emails, 1)) > 0) {
+		        if ( count( array_slice( $emails, 1 ) ) > 0 ) {
 
                     $cc = implode(',', array_slice($emails, 1));
                 } else {
