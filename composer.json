@@ -12,7 +12,8 @@
 	"minimum-stability": "dev",
 	"require": {
 		"php": ">=7.1",
-		"laravel/framework": "^5.5|^6",
+		"laravel/framework": "^6|^7",
+		"maxbanton/cwh": "^2.0",
 		"guzzlehttp/guzzle": "*",
 		"ext-json": "*"
 	},
