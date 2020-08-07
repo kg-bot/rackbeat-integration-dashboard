@@ -1,4 +1,4 @@
-<?php namespace App\Classes;
+<?php namespace KgBot\RackbeatDashboard\Classes;
 
 use Exception;
 use Illuminate\Database\DetectsLostConnections;
