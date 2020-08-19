@@ -16,14 +16,14 @@ return [
 
 	'emails'        => [
 
-	    'addresses'    => [
+		'addresses'    => [
 
 		    'ninicstefan94@gmail.com',
 		    'stn@rackbeat.com',
 	    ],
-	    'send_on_fail' => env( 'RACKBEAT_DASHBOARD_SEND_EMAIL_ON_FAIL', true ),
-	    'days'         => [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday' ],
-	    'hours'        => [ 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ],
+		'send_on_fail' => env( 'RACKBEAT_DASHBOARD_SEND_EMAIL_ON_FAIL', true ),
+		'days'         => [ 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday' ],
+		'hours'        => [ 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ],
 	],
 	'should_notify' => env( 'RACKBEAT_DASHBOARD_SHOULD_NOTIFY', false ),
 	'retry_after'   => env( 'RACKBEAT_DASHBOARD_RETRY_AFTER', 1 ),
@@ -31,5 +31,8 @@ return [
 		'cloudwatch' => [
 			'retentionDays' => env( 'RACKBEAT_DASHBOARD_CLOUDWATCH_RETENTION_DAYS', 30 )
 		]
+	],
+	'exceptions'    => [
+		'patterns' => explode( ',', env( 'RACKBEAT_DASHBOARD_EXCEPTION_PATTERNS', '' ) )
 	]
 ];
