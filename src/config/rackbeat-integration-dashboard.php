@@ -33,6 +33,6 @@ return [
 		]
 	],
 	'exceptions'    => [
-		'patterns' => explode( ',', env( 'RACKBEAT_DASHBOARD_EXCEPTION_PATTERNS', '' ) )
+		'patterns' => explode( ',', env( 'RACKBEAT_DASHBOARD_EXCEPTION_PATTERNS' ) )
 	]
 ];

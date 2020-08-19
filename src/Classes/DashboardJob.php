@@ -154,12 +154,14 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 		$patterns = Config::get( 'rackbeat-integration-dashboard.exceptions.patterns', [] );
 		if ( count( $patterns ) ) {
 			foreach ( $patterns as $pattern ) {
-				try {
-					if ( preg_match( $pattern, $throwable->getMessage() ) ) {
-						return false;
+				if ( $pattern !== '' ) {
+					try {
+						if ( preg_match( $pattern, $throwable->getMessage() ) ) {
+							return false;
+						}
+					} catch ( \Exception $exception ) {
+						// Do nothing because it probably failed because of invalid pattern
 					}
-				} catch ( \Exception $exception ) {
-					// Do nothing because it probably failed because of invalid pattern
 				}
 			}
 		}
