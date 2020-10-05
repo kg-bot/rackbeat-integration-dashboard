@@ -34,7 +34,7 @@ use KgBot\RackbeatDashboard\Notifications\StateMessage;
  * @property int                 $created_by
  * @property Carbon\Carbon       $created_at
  * @property Carbon\Carbon       $finished_at
- * @property User                $owner
+ * @property Model               $owner
  * @property JobLog[]|Collection $logs
  */
 class Job extends Model
@@ -59,7 +59,7 @@ class Job extends Model
 
 
 	public function logs() {
-		return $this->morphMany( JobLog::class, 'loggable' );
+		return $this->hasMany( JobLog::class, 'job_id', 'id' );
 	}
 
 	/**
@@ -83,6 +83,15 @@ class Job extends Model
 
 			return $query->where( 'rackbeat_user_account_id', $account_id );
 		} );
+	}
+
+	/**
+	 * @param int $account_id
+	 *
+	 * @return bool
+	 */
+	public function belongsToAccount( int $account_id ): bool {
+		return ! empty( $this->owner->rackbeat_user_account_id ) && $this->owner->rackbeat_user_account_id === $account_id;
 	}
 
 	public function fillDefaults() {
@@ -115,6 +124,7 @@ class Job extends Model
 		$this->state = JobState::PROCESSING;
 		$this->save();
 		$this->stateChanged();
+		$this->log( 'Job started', 'debug', [ 'connection' => $this->created_by ] );
 	}
 
 	protected function stateChanged() {
@@ -154,6 +164,9 @@ class Job extends Model
 
 		if ( $success ) {
 			$this->progress = 100;
+			$this->log( 'Finished' );
+		} else {
+			$this->log( 'Failed', 'error' );
 		}
 		$this->save();
 
@@ -187,5 +200,14 @@ class Job extends Model
 
 	public function shouldNotify() {
 		return Config::get( 'rackbeat-integration-dashboard.should_notify' );
+	}
+
+	public function log( $message, $level = 'debug', $extra = [] ) {
+		$this->logs()->create( [
+			'context' => $this->commandName(),
+			'level'   => $level,
+			'message' => $message,
+			'extra'   => array_merge( [ 'rackbeat_user_account_id' => $this->owner->rackbeat_user_account_id, 'owner' => $this->created_by ], $extra )
+		] );
 	}
 }

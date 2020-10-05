@@ -25,22 +25,27 @@ use Illuminate\Database\Eloquent\Model;
  */
 class JobLog extends Model
 {
-	const UPDATED_AT = null;
+	const        UPDATED_AT   = null;
+	public const ERROR_LEVELS = [ 'error', 'failed', 'fail', 'warning' ];
 
 	public $timestamps = true;
 
-	protected $table = 'job_logs';
+	protected $table    = 'job_logs';
+	protected $fillable = [ 'message', 'context', 'extra', 'level' ];
 
-	public function scopeGroups( Builder $query ) {
-		return $query->groupBy( 'loggable_type', 'loggable_id' )
-		             ->selectRaw( 'MAX(id) as id, MAX(created_at) as created_at, COUNT(id) as total' )
-		             ->addSelect( [ 'loggable_id', 'loggable_type' ] )
-		             ->orderByRaw( 'MAX(created_at) DESC' );
+	protected $casts = [
+		'extra' => 'array'
+	];
+
+	public function jobs() {
+		return $this->belongsToMany( Job::class );
 	}
 
-	public function scopeJob( Builder $query, JobLog $jobLog ) {
-		return $query->where( 'loggable_id', $jobLog->loggable_id )
-		             ->where( 'loggable_type', $jobLog->loggable_type )
-		             ->orderByDesc( 'created_at' );
+	public function scopeForRackbeatAccount( Builder $builder, int $accountId ) {
+		return $builder->where( 'extra->rackbeat_user_account_id', $accountId );
+	}
+
+	public function scopeError( Builder $builder ) {
+		return $builder->whereIn( 'level', self::ERROR_LEVELS );
 	}
 }

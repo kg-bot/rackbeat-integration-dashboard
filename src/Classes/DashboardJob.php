@@ -73,6 +73,7 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 		} else {
 			$this->jobModel->finish( false );
 		}
+		$this->jobModel->log( $e->getMessage(), 'error', [ 'code' => $e->getCode(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'trace' => $e->getTrace() ] );
 		$this->fail( $e );
 	}
 

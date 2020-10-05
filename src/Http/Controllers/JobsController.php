@@ -52,7 +52,7 @@ class JobsController extends Controller
 
 	public function details( Request $request, Job $job ) {
 
-		return response()->json( [ 'job' => $job ] );
+		return response()->json( [ 'job' => $job->load( 'logs' ) ] );
 	}
 
 	/**
@@ -68,7 +68,7 @@ class JobsController extends Controller
 		 */
 		try {
 
-			$job->retry();
+			$job->retry( true );
 
 			return response()->json( [ 'message' => 'Job ' . $job->id . ' has been sent to queue.' ] );
 		} catch ( Exception $exception ) {

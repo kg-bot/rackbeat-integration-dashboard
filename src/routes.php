@@ -1,20 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: kgbot
- * Date: 2/21/19
- * Time: 6:13 PM
- */
 
 use KgBot\RackbeatDashboard\Http\Middleware\CheckDashboardToken;
+use KgBot\RackbeatDashboard\Http\Middleware\JobBelongsToAccount;
 
 Route::group( [ 'prefix' => 'rackbeat-integration-dashboard', 'namespace' => 'KgBot\RackbeatDashboard\Http\Controllers', 'middleware' => [ 'web', CheckDashboardToken::class ] ], function () {
 
 	Route::get( 'jobs/{rackbeat_account_id}', 'JobsController@index' )->name( 'dashboard-jobs.index' );
 
-	Route::post( 'retry/{job}', 'JobsController@retry' )->name( 'dashboard-jobs.retry' );
+	Route::group( [ 'middleware' => [ JobBelongsToAccount::class ] ], function () {
+		Route::post( 'retry/{job}/{rackbeat_account_id}', 'JobsController@retry' )->name( 'dashboard-jobs.retry' );
 
-	Route::delete( 'jobs/{job}', 'JobsController@delete' )->name( 'dashboard-jobs.delete' );
+		Route::delete( 'jobs/{job}/{rackbeat_account_id}', 'JobsController@delete' )->name( 'dashboard-jobs.delete' );
 
-	Route::get( 'job/{job}', 'JobsController@details' )->name( 'dashboard-jobs.details' );
+		Route::get( 'job/{job}/{rackbeat_account_id}', 'JobsController@details' )->name( 'dashboard-jobs.details' );
+	} );
 } );
