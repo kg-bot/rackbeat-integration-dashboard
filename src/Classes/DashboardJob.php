@@ -72,8 +72,8 @@ class DashboardJob implements ShouldQueue, Reportable, Executable
 			$this->jobModel->retryAfterFail();
 		} else {
 			$this->jobModel->finish( false );
+			$this->jobModel->log( $e->getMessage(), 'error', [ 'code' => $e->getCode(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'trace' => $e->getTrace() ] );
 		}
-		$this->jobModel->log( $e->getMessage(), 'error', [ 'code' => $e->getCode(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'trace' => $e->getTrace() ] );
 		$this->fail( $e );
 	}
 
