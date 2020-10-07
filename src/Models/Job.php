@@ -210,4 +210,15 @@ class Job extends Model
 			'extra'   => array_merge( [ 'rackbeat_user_account_id' => $this->owner->rackbeat_user_account_id, 'owner' => $this->created_by ], $extra )
 		] );
 	}
+
+	/**
+	 * We are not using updated at column so we override this
+	 *
+	 * @param mixed $value
+	 *
+	 * @return $this|Job
+	 */
+	public function setUpdatedAt( $value ) {
+		return $this;
+	}
 }
