@@ -39,6 +39,15 @@ class JobsController extends Controller
 				$query->whereDate( 'created_at', '>=', Carbon::parse( ( $request->get( 'created_at' ) ) ) );
 			}
 
+			if ( $request->filled( 'type' ) ) {
+				$query->where( 'command', 'like', '%' . $request->get( 'type' ) );
+			}
+
+			if ( $request->filled( 'search' ) ) {
+				$query->where( 'title', 'like', '%' . $request->get( 'search' ) . '%' )
+				      ->orWhere( 'args', 'like', '%' . $request->get( 'search' ) . '%' );
+			}
+
 
 			$jobs = $query->latest()->paginate( $request->get( 'per_page', 10 ), [ '*' ], 'page', $request->get( 'page', 1 ) );
 
@@ -87,5 +96,16 @@ class JobsController extends Controller
 		$job->delete();
 
 		return response( 'success' );
+	}
+
+	public function filterableTypes() {
+		$dir   = new \RecursiveDirectoryIterator( app_path( 'Jobs' ), \FilesystemIterator::SKIP_DOTS );
+		$types = collect();
+
+		foreach ( $dir as $file ) {
+			$types->push( str_replace( '.php', '', $file->getFilename() ) );
+		}
+
+		return response()->json( compact( 'types' ) );
 	}
 }

@@ -6,6 +6,7 @@ use KgBot\RackbeatDashboard\Http\Middleware\JobBelongsToAccount;
 Route::group( [ 'prefix' => 'rackbeat-integration-dashboard', 'namespace' => 'KgBot\RackbeatDashboard\Http\Controllers', 'middleware' => [ 'web', CheckDashboardToken::class ] ], function () {
 
 	Route::get( 'jobs/{rackbeat_account_id}', 'JobsController@index' )->name( 'dashboard-jobs.index' );
+	Route::get( 'job-types', 'JobsController@filterableTypes' )->name( 'dashboard-jobs.types' );
 
 	Route::group( [ 'middleware' => [ JobBelongsToAccount::class ] ], function () {
 		Route::post( 'retry/{job}/{rackbeat_account_id}', 'JobsController@retry' )->name( 'dashboard-jobs.retry' );
