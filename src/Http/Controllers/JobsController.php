@@ -44,8 +44,10 @@ class JobsController extends Controller
 			}
 
 			if ( $request->filled( 'search' ) ) {
-				$query->where( 'title', 'like', '%' . $request->get( 'search' ) . '%' )
-				      ->orWhere( 'args', 'like', '%' . $request->get( 'search' ) . '%' );
+				$query->where( function ( $query ) use ( $request ) {
+					$query->where( 'title', 'like', '%' . $request->get( 'search' ) . '%' )
+					      ->orWhere( 'args', 'like', '%' . $request->get( 'search' ) . '%' );
+				} );
 			}
 
 
@@ -103,6 +105,9 @@ class JobsController extends Controller
 		$types = collect();
 
 		foreach ( $dir as $file ) {
+			if ( $file->isDir() ) {
+				continue;
+			}
 			$types->push( str_replace( '.php', '', $file->getFilename() ) );
 		}
 
