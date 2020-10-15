@@ -101,7 +101,7 @@ class JobsController extends Controller
 	}
 
 	public function filterableTypes() {
-		$dir   = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( app_path( 'Jobs' ), \FilesystemIterator::SKIP_DOTS ) );
+		$dir   = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( realpath( app_path( 'Jobs' ) ), \FilesystemIterator::SKIP_DOTS ) );
 		$types = collect();
 
 		foreach ( $dir as $file ) {
