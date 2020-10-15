@@ -15,10 +15,10 @@ class CheckDashboardToken
 	 * @return mixed
 	 */
 	public function handle( $request, Closure $next ) {
-        if (\Config::get('rackbeat-integration-dashboard.oauth_token', null) !== null && $request->hasHeader('X-Dashboard-Token') && $request->header('X-Dashboard-Token') === \Config::get('rackbeat-integration-dashboard.oauth_token')) {
+        if ( ! app()->environment( 'production' ) || ( \Config::get( 'rackbeat-integration-dashboard.oauth_token', null ) !== null && $request->hasHeader( 'X-Dashboard-Token' ) && $request->header( 'X-Dashboard-Token' ) === \Config::get( 'rackbeat-integration-dashboard.oauth_token' ) ) ) {
 
-			return $next( $request );
-		}
+	        return $next( $request );
+        }
 
 		return abort( 403, 'Request is not authorized.' );
 	}
