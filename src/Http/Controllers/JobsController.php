@@ -13,10 +13,10 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\File;
 use KgBot\RackbeatDashboard\Models\Job;
 
 class JobsController extends Controller
@@ -102,7 +102,7 @@ class JobsController extends Controller
 	}
 
 	public function filterableTypes() {
-		$dir   = Filesystem::allFiles( app_path( 'Jobs' ) );
+		$dir   = File::allFiles( app_path( 'Jobs' ) );
 		$types = collect();
 
 		foreach ( $dir as $file ) {
