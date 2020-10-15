@@ -16,6 +16,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use KgBot\RackbeatDashboard\Models\Job;
 
 class JobsController extends Controller
@@ -105,10 +106,9 @@ class JobsController extends Controller
 		$types = collect();
 
 		foreach ( $dir as $file ) {
-			if ( $file->isDir() ) {
-				continue;
+			if ( Str::endsWith( $file->getFilename(), '.php' ) ) {
+				$types->push( str_replace( '.php', '', $file->getFilename() ) );
 			}
-			$types->push( str_replace( '.php', '', $file->getFilename() ) );
 		}
 
 		return response()->json( compact( 'types' ) );
