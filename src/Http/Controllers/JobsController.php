@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -101,7 +102,7 @@ class JobsController extends Controller
 	}
 
 	public function filterableTypes() {
-		$dir   = new \RecursiveIteratorIterator( new \RecursiveDirectoryIterator( realpath( app_path( 'Jobs' ) ), \FilesystemIterator::SKIP_DOTS ), \RecursiveIteratorIterator::CHILD_FIRST );
+		$dir   = Filesystem::allFiles( app_path( 'Jobs' ) );
 		$types = collect();
 
 		foreach ( $dir as $file ) {
