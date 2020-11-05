@@ -203,12 +203,16 @@ class Job extends Model
 	}
 
 	public function log( $message, $level = 'debug', $extra = [] ) {
-		$this->logs()->create( [
-			'context' => $this->commandName(),
-			'level'   => $level,
-			'message' => $message,
-			'extra'   => array_merge( [ 'rackbeat_user_account_id' => $this->owner->rackbeat_user_account_id, 'owner' => $this->created_by ], $extra )
-		] );
+		try {
+			$this->logs()->create( [
+				'context' => $this->commandName(),
+				'level'   => $level,
+				'message' => $message,
+				'extra'   => array_merge( [ 'rackbeat_user_account_id' => $this->owner->rackbeat_user_account_id, 'owner' => $this->created_by ], $extra )
+			] );
+		} catch ( \Exception $exception ) {
+			// Can't create log, probably job is already deleted or there is recursion in JSON
+		}
 	}
 
 	/**
