@@ -68,7 +68,7 @@ class JobsController extends Controller
 	}
 
 	public function logs( Request $request, Job $job ) {
-		$logs = $job->logs()->paginate();
+		$logs = $job->logs()->paginate( 10, '*', 'page', $request->get( 'page' ) );
 
 		return response()->json( compact( 'logs' ) );
 	}
