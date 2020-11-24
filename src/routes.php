@@ -13,6 +13,9 @@ Route::group( [ 'prefix' => 'rackbeat-integration-dashboard', 'namespace' => 'Kg
 
 		Route::delete( 'jobs/{job}/{rackbeat_account_id}', 'JobsController@delete' )->name( 'dashboard-jobs.delete' );
 
+		Route::get( 'job/{job}/logs/{rackbeat_account_id}', 'JobsController@logs' )->name( 'dashboard-jobs.logs' );
+
 		Route::get( 'job/{job}/{rackbeat_account_id}', 'JobsController@details' )->name( 'dashboard-jobs.details' );
+
 	} );
 } );

@@ -64,7 +64,13 @@ class JobsController extends Controller
 
 	public function details( Request $request, Job $job ) {
 
-		return response()->json( [ 'job' => $job->load( 'logs' ) ] );
+		return response()->json( compact( 'job' ) );
+	}
+
+	public function logs( Request $request, Job $job ) {
+		$logs = $job->logs()->paginate();
+
+		return response()->json( compact( 'logs' ) );
 	}
 
 	/**
